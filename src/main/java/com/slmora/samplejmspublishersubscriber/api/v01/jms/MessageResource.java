@@ -5,8 +5,14 @@
  */
 package com.slmora.samplejmspublishersubscriber.api.v01.jms;
 
+import com.slmora.samplejmspublishersubscriber.payload.vo.MessageVo;
+import com.slmora.samplejmspublishersubscriber.service.ISJMessageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * This Class created for
@@ -23,4 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class MessageResource
 {
 
+    @Autowired
+    private ISJMessageService messageService;
+
+    @GetMapping("/messages")
+    public List<MessageVo> getMessages(){
+        return messageService.getAllMessages();
+    }
 }

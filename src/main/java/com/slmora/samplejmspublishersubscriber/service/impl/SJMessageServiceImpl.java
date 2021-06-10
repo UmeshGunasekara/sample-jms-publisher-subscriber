@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * This Class created for
@@ -60,8 +62,24 @@ public class SJMessageServiceImpl implements ISJMessageService
     }
 
     @Override
+    public SJMessage save(String message, String type, String destination, String status)
+    {
+        SJMessage msg = new SJMessage(
+                message,
+                type,
+                status,
+                destination
+        );
+        msg.setCreateDateTime(new Date(System.currentTimeMillis()));
+        msg.setUpdateDateTime(new Date(System.currentTimeMillis()));
+        return messageRepository.save(msg);
+    }
+
+    @Override
     public List<MessageVo> getAllMessages()
     {
-        return null;
+        return StreamSupport.stream(messageRepository.findAll().spliterator(),false)
+                .map(user -> modelMapper.map(user, MessageVo.class))
+                .collect(Collectors.toList());
     }
 }

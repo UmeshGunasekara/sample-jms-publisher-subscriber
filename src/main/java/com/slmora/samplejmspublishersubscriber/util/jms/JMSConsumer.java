@@ -5,8 +5,10 @@
  */
 package com.slmora.samplejmspublishersubscriber.util.jms;
 
+import com.slmora.samplejmspublishersubscriber.service.ISJMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.scheduling.annotation.Async;
@@ -29,13 +31,19 @@ public class JMSConsumer
 {
     private static final Logger logger = LoggerFactory.getLogger(JMSConsumer.class);
 
+    @Value("${activemq.test.topic}")
+    private String baseTopic;
+
+    @Autowired
+    private ISJMessageService messageService;
+
     @JmsListener(destination="${activemq.test.topic}",containerFactory = "topicBasedConnectionFactory")
     @Async
-    public void receiveVTopicB(String message) throws JMSException
+    public void receiveFromTopic(String message) throws JMSException
     {
         logger.debug("Test Topic1 Message : "+ message);
         System.out.println("Test Topic1 Message : "+ message);
-
+        messageService.save(message, "Topic", "Receive", baseTopic);
         try{
             Thread.sleep(500L);
         }catch(InterruptedException e){

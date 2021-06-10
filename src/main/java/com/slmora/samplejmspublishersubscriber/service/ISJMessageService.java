@@ -24,5 +24,6 @@ import java.util.List;
 public interface ISJMessageService
 {
     public SJMessage save(PublishMessageRequest messageRequest);
+    public SJMessage save(String message, String type, String destination, String status);
     public List<MessageVo> getAllMessages();
 }
