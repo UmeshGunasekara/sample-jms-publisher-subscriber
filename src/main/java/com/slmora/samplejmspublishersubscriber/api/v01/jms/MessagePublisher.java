@@ -9,10 +9,13 @@ import com.slmora.samplejmspublishersubscriber.payload.request.PublishMessageReq
 import com.slmora.samplejmspublishersubscriber.payload.response.MessageResponse;
 import com.slmora.samplejmspublishersubscriber.service.ISJMessageService;
 import org.apache.activemq.command.ActiveMQTopic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.messaging.MessagingException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +37,8 @@ import javax.validation.Valid;
 @RequestMapping("/api/v01/msg")
 public class MessagePublisher
 {
+    private static final Logger logger = LoggerFactory.getLogger(MessagePublisher.class);
+
     @Autowired
     private JmsMessagingTemplate jmsMessagingTemplate;
 
@@ -49,6 +54,7 @@ public class MessagePublisher
             jmsMessagingTemplate.convertAndSend(topic, messageRequest.getMessage());
             messageService.save(messageRequest);
             return ResponseEntity.ok(new MessageResponse("Message Sent successfully!"));
+//        }catch (MessagingException | JpaSystemException ex){
         }catch (MessagingException ex){
             return ResponseEntity
                     .badRequest()

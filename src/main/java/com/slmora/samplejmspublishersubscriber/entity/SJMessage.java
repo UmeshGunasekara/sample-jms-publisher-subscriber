@@ -13,6 +13,8 @@ import lombok.ToString;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -38,9 +40,12 @@ import java.util.Date;
 @Table(name = "sj_message")
 public class SJMessage implements Serializable
 {
+    private static final long serialVersionUID = -7828705894115051172L;
+
     @Id
     @Basic(optional = false)
     @Column(name = "message_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer messageId;
 
     @Column(name = "message", length = 250)
