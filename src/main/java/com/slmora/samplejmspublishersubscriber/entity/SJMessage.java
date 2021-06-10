@@ -67,6 +67,13 @@ public class SJMessage implements Serializable
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDateTime;
 
+    public SJMessage(String message, String messageType, String messageStatus, String jmsDestination){
+        this.message = message;
+        this.messageType = messageType;
+        this.messageStatus = messageStatus;
+        this.jmsDestination = jmsDestination;
+    }
+
     @Override
     public boolean equals(Object o)
     {

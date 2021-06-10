@@ -7,10 +7,12 @@ package com.slmora.samplejmspublishersubscriber.api.v01.jms;
 
 import com.slmora.samplejmspublishersubscriber.payload.request.PublishMessageRequest;
 import com.slmora.samplejmspublishersubscriber.payload.response.MessageResponse;
+import com.slmora.samplejmspublishersubscriber.service.ISJMessageService;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsMessagingTemplate;
+import org.springframework.messaging.MessagingException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,12 +37,22 @@ public class MessagePublisher
     @Autowired
     private JmsMessagingTemplate jmsMessagingTemplate;
 
+    @Autowired
+    private ISJMessageService messageService;
+
     @PostMapping("/publish")
     public ResponseEntity<?> signUpUser(@Valid
                                             @RequestBody
                                                 PublishMessageRequest messageRequest){
-        ActiveMQTopic topic = new ActiveMQTopic(messageRequest.getTopic());
-        jmsMessagingTemplate.convertAndSend(topic, messageRequest.getMessage());
-        return ResponseEntity.ok(new MessageResponse("Message Sent successfully!"));
+        try {
+            ActiveMQTopic topic = new ActiveMQTopic(messageRequest.getTopic());
+            jmsMessagingTemplate.convertAndSend(topic, messageRequest.getMessage());
+            messageService.save(messageRequest);
+            return ResponseEntity.ok(new MessageResponse("Message Sent successfully!"));
+        }catch (MessagingException ex){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error Happened, Message Not sent"));
+        }
     }
 }

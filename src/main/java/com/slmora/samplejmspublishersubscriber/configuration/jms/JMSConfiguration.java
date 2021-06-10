@@ -64,7 +64,7 @@ public class JMSConfiguration
     {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory());
-        factory.setClientId("Mora01");
+        factory.setClientId(clientId);
         factory.setSubscriptionDurable(true);
         factory.setPubSubDomain(true);
         return factory;
